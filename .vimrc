@@ -5,7 +5,6 @@ filetype off                  " required. vundle에서 off하라고 함.
 set rtp+=$HOME/.vim/bundle/Vundle.vim/
 call vundle#begin('$HOME/.vim/bundle/')
 
-""" 메이저 플러그인
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
@@ -14,152 +13,293 @@ Plugin 'tpope/vim-surround'
 
 " nerdcommenter
 Plugin 'preservim/nerdcommenter'
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 0
+" Use compact syntax for prettified multi-line comments
+let g:NERDCompactSexyComs = 1
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
+" Set a language to use its alternate delimiters by default
+let g:NERDAltDelims_java = 1
+" Add your own custom formats or override the defaults
+let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
+" Allow commenting and inverting empty lines (useful when commenting a region)
+let g:NERDCommentEmptyLines = 0
+" Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
+" Enable NERDCommenterToggle to check all selected lines is commented or not
+let g:NERDToggleCheckAllLines = 1
 
 " nerdtree
 Plugin 'scrooloose/nerdtree'
+" \ne로 nt toggle
+nmap <leader>ne :NERDTreeToggle<cr>
+" nerdtree 항상 시작
+" autocmd vimenter * NERDTree
 
-
-
-
-""" 비주얼 관련
 " whitespace 표시
 Plugin 'bad-whitespace'
 
 " rainbow parenthesis
 Plugin 'frazrepo/vim-rainbow'
+let g:rainbow_active = 1
+let g:rainbow_ctermfgs = ['lightblue', 'lightgreen', 'yellow', 'red', 'magenta']  " 이쁨
 
 " vim airline
 Plugin 'vim-airline/vim-airline'
 
 " vir airline 테마
 Plugin 'vim-airline/vim-airline-themes'
+" vim airline에 현재 경로도 표시하도록 설정
+let g:airline_section_c = '%<%F%m %#__accent_red#%{airline#util#wrap(airline#parts#readonly(),0)}%#__restore__#'
+" vim airline 화살표 모양
+let g:airline_powerline_fonts = 1
+" vim airline theme.
+" let g:airline_theme='simple'  " 없는 게 가독성 좋네..
+
+" airline도 아이콘 뜸
+Plugin 'ryanoasis/vim-devicons'
 
 " vim airline에 시계 추가
 Plugin 'enricobacis/vim-airline-clock'
 
 " indent 줄 표시
 Plugin 'nathanaelkane/vim-indent-guides'
+let g:indent_guides_enable_on_vim_startup = 1
+set ts=4 sw=4 et
+let g:indent_guides_start_level = 2
+let g:indent_guides_guide_size = 1
+let g:indent_guides_auto_colors = 0
+hi IndentGuidesOdd  ctermbg=darkgrey
+hi IndentGuidesEven ctermbg=darkgrey
 
 " 이걸 해야 float도 강조됨
 Plugin 'vim-python/python-syntax'
-
-" sqrt 같은 문자들을 표시
-Plugin 'ehamberg/vim-cute-python'
+" 너무 많이하면 난잡함
+" let g:python_highlight_all = 1
+let g:python_highlight_builtins = 1
 
 " 이거는 다른 용도로 nerdtree에서 색깔 입히려고.
 Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
-
-" cursor가 좋인 단어에 밑줄
-Plugin 'itchyny/vim-cursorword'
-
-" Ctrl f 부드럽게
-" Plugin 'yuttie/comfortable-motion.vim'
-" 이거 느려서 다른 걸로 교체
+" highlight
+let g:NERDTreeFileExtensionHighlightFullName = 1
+" let g:NERDTreeExactMatchHighlightFullName = 1
+" let g:NERDTreePatternMatchHighlightFullName = 1
+" red line 없애줌
+let g:NERDTreeHighlightCursorline = 0
 
 " search가 몇번째인지 표시
 Plugin 'osyo-manga/vim-anzu'
+" mapping
+nmap n <Plug>(anzu-n-with-echo)
+nmap N <Plug>(anzu-N-with-echo)
+nmap * <Plug>(anzu-star-with-echo)
+nmap # <Plug>(anzu-sharp-with-echo)
+" statusline
+set statusline=%{anzu#search_status()}
 
 " python스럽게 indent 해준다
 Plugin 'hynek/vim-python-pep8-indent'
 
 " yank한 부분을 highlight
 Plugin 'machakann/vim-highlightedyank'
+" A negative number makes the highlight persistent.
+"let g:highlightedyank_highlight_duration = -1
+" persistent는 아닌것같더라.
+" Assign a number of time in milliseconds.
+let g:highlightedyank_highlight_duration = 1000
+" 사실은 디폴트도 1000인듯
 
 " 수정 사항 생기면 +로 표시
 Plugin 'chrisbra/changesplugin'
 
 " 왼쪽에 scroll 표시
 Plugin 'flebel/vim-scroll-position'
+" yellow
+hi ScrollPositionMarker        ctermfg=11
+hi ScrollPositionVisualBegin   ctermfg=11
+hi ScrollPositionVisualMiddle  ctermfg=11
+hi ScrollPositionVisualEnd     ctermfg=11
+hi ScrollPositionVisualOverlap ctermfg=11
+hi ScrollPositionChange        ctermfg=11
+hi ScrollPositionJump          ctermfg=11
 
-
-
-""" 기능성
-" 자동으로 complete되도록 popup한다
-Plugin 'AutoComplPop'
 
 " 괄호 쌍 맞도록 자동으로 닫는 괄호 하나 추가
 Plugin 'Raimondi/delimitMate'
-
-" 이것도 자동완성인데 tab임
-Plugin 'ervandew/supertab'
+let delimitMate_expand_cr=1
 
 " +, _로 visual expand
 Plugin 'terryma/vim-expand-region'
 
 " flake8을 vim 내부에서 사용
 Plugin 'nvie/vim-flake8'
+autocmd FileType python map <buffer> <leader>f :call flake8#Flake8()<CR>
+let g:flake8_quickfix_height=20
+let g:flake8_show_in_gutter=1  " show
+let g:flake8_show_in_file=1  " show
+let g:flake8_error_marker='EE'     " set error marker to 'EE'
+let g:flake8_warning_marker='WW'   " set warning marker to 'WW'
+let g:flake8_pyflake_marker=''     " disable PyFlakes warnings
+let g:flake8_complexity_marker=''  " disable McCabe complexity warnings
+let g:flake8_naming_marker=''      " disable naming warnings
+" to use colors defined in the colorscheme
+highlight link Flake8_Error      Error
+highlight link Flake8_Warning    WarningMsg
+highlight link Flake8_Complexity WarningMsg
+highlight link Flake8_Naming     WarningMsg
+highlight link Flake8_PyFlake    WarningMsg
 
 " / search에서 tab complete
 Plugin 'SearchComplete'
 
-
-
-""" 기타
 " 잘 모르겠음
 Plugin 'peterrincker/vim-argumentative'
+nmap [; <Plug>Argumentative_Prev
+nmap ]; <Plug>Argumentative_Next
+xmap [; <Plug>Argumentative_XPrev
+xmap ]; <Plug>Argumentative_XNext
+nmap <; <Plug>Argumentative_MoveLeft
+nmap >; <Plug>Argumentative_MoveRight
+xmap i; <Plug>Argumentative_InnerTextObject
+xmap a; <Plug>Argumentative_OuterTextObject
+omap i; <Plug>Argumentative_OpPendingInnerTextObject
+omap a; <Plug>Argumentative_OpPendingOuterTextObject
 
 " 잘 모르겠음
 Plugin 'chiel92/vim-autoformat'
-
-
-
-" 2/18
-" 시작 화면
-Plugin 'mhinz/vim-startify'
 
 " mark해서 이동
 Plugin 'kshenoy/vim-signature'
 
 " smooth scroll, 조금 빠름
 Plugin 'terryma/vim-smooth-scroll'
-" 약간 빠르긴함.
+noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
+noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
+noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
+noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
 
-" start mac
+" vimtex
 Plugin 'lervag/vimtex'
+noremap <silent> <leader>lv :VimtexStop<CR> :VimtexCompile<CR>
 
-" 4/19
+
+
+
+" tarbar for mac
 Plugin 'majutsushi/tagbar'
+" 먼저 설치를 진행 brew install ctags-exuberant
+" 그 다음 해당 경로를 적용
+let g:Tlist_Ctags_Cmd="/opt/homebrew/Cellar/ctags/5.8_2/bin/ctags"
+nmap <Leader>tg :TagbarToggle<CR>
 
-Plugin 'ryanoasis/vim-devicons'
-" airline도 아이콘 뜸
+" 유니크 알파벳 표시
+Plugin 'unblevable/quick-scope'
+highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
+highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
+
+" leader k로 멀티로 highlight 가능
+Plugin 'lfv89/vim-interestingwords'
+
+" 암튼 completion에서 이게 좀 더 자세히 나옴.
+Plugin 'neoclide/coc.nvim'
+"" enter 했을 때 선택되도록
+"inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+"                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+"" Use tab for trigger completion with characters ahead and navigate.
+"" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+"" other plugin before putting this into your config.
+"inoremap <silent><expr> <TAB>
+"      \ pumvisible() ? "\<C-n>" :
+"      \ <SID>check_back_space() ? "\<TAB>" :
+"      \ coc#refresh()
+"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+"function! s:check_back_space() abort
+"  let col = col('.') - 1
+"  return !col || getline('.')[col - 1]  =~# '\s'
+"endfunction
+
+" new
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" " <C-g>u breaks current undo, please make your own choice
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" Use tab for trigger completion with characters ahead and navigate
+" " NOTE: There's always complete item selected by default, you may want to
+" enable
+" " no select by `"suggest.noselect": true` in your configuration file
+" " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" " other plugin before putting this into your config
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+function! CheckBackspace() abort
+      let col = col('.') - 1
+        return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+"
 
 
 
+" 현재 단어와 twin들을 highlight
+Plugin 'dominikduda/vim_current_word'
+hi CurrentWord ctermbg=57
+hi CurrentWordTwins ctermbg=105
+
+" 현재 위치에 대한 indent를 컬러로 표시
+Plugin 'tweekmonster/local-indent.vim'
+" autocmd FileType * LocalIndentGuide +hl -cc
+highlight LocalIndentGuide ctermfg=2 ctermbg=0 cterm=inverse
+" error with latex
+
+" =ci같은 게 .으로 repeat되도록
+Plugin 'tpope/vim-repeat'
 
 
 
-" Plugin 'SrcExpl'
-" Plugin 'taglist-plus'
-" Plugin 'taglist.vim'
-" Plugin 'scrooloose/syntastic'
-" Plugin 'scrooloose/nerdcommenter'
-" Plugin 'davidhalter/jedi-vim'
-" Plugin 'Valloric/YouCompleteMe'
-" Plugin 'klen/python-mode'
-" Plugin 'majutsushi/tagbar'
-" Plugin 'ctags.vim'
-" Plugin 'airblade/vim-gitgutter'
-" Plugin 'mhinz/vim-signify'
-" Plugin 'scrooloose/syntastic'
-" Plugin 'unblevable/quick-scope'
-" Plugin 'Yggdroot/indentLine'
-" Plugin 'metakirby5/codi.vim'
-" Plugin 'sirver/ultisnips'
+" spell, typo check. 여러 가지 해봤는데 이게 좋은듯.
+Plugin 'kamykn/spelunker.vim'
+
+
+
+" 폐기
+" sqrt 같은 문자들을 표시
+" Plugin 'ehamberg/vim-cute-python'
+
+" tabnine
 " Plugin 'zxqfl/tabnine-vim'
-" Plugin 'airblade/vim-gitgutter'
-" Plugin 'jisaacks/gitgutter'
-" Plugin 'mhinz/vim-signify'
-" Plugin 'vim-airline/vim-airline-themes'
-" Plugin 'powerline/powerline'
-" Plugin 'edkolev/tmuxline.vim'
-" Plugin 'itchyny/lightline.vim'
-" Plugin 'shougo/deoplete.nvim'
-" Plugin 'roman/golden-ratio'
-" Plugin 'leafcage/yankround.vim'
-" Plugin 'miyakogi/conoline.vim'
-" Plugin 'severin-lemaignan/vim-minimap'
-" Plugin 'koron/minimap-vim'
-" Plugin 'mipmip/vim-minimap'
+
+" 시작 화면
+" Plugin 'mhinz/vim-startify'
+
+" 자동으로 complete되도록 popup한다
+" Plugin 'AutoComplPop'
+" set complete+=kspell
+" set completeopt=menuone,longest
+" set shortmess+=c
+
+" cursor가 좋인 단어에 밑줄
+" Plugin 'itchyny/vim-cursorword'
+
+" Ctrl f 부드럽게
+" Plugin 'yuttie/comfortable-motion.vim'
+" 이거 느려서 다른 걸로 교체
+
+" 이것도 자동완성인데 tab임 말하자면 C-n을 tab으로 대체
+" Plugin 'ervandew/supertab'
+" let g:SuperTabDefaultCompletionType = "<c-n>"  "위부터
+
+" 현재 function을 헤더에
+Plugin 'wellle/context.vim'
+
+" new
+" preview when substitute
+Plugin 'markonm/traces.vim'
+
+
+
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -228,8 +368,8 @@ set cindent  "C용 indent라고함..
 set cinkeys=0{,0},!^F,o,O,e " default is: 0{,0},0),:,0#,!^F,o,O,e
 
 " vim에서 복사한 내용이 클립보드에 저장. "+ 이거 안해도 됨
-" set clipboard=unnamed  " mac에서는 이거
-set clipboard=unnamedplus  " linux에서는 이거
+set clipboard=unnamed  " mac에서는 이거
+" set clipboard=unnamedplus  " linux에서는 이거
 
 " beep 대신에 visual bell 사용
 set visualbell
@@ -261,11 +401,25 @@ set cursorline
 " color
 " good
 "hi CursorLine   cterm=NONE ctermbg=8 ctermfg=NONE
-hi CursorLine   cterm=NONE ctermbg=16 ctermfg=NONE
+"hi CursorLine   cterm=NONE ctermbg=16 ctermfg=NONE
 "hi CursorLine   cterm=NONE ctermbg=59 ctermfg=NONE
+hi CursorLine   cterm=NONE ctermbg=235 ctermfg=NONE
 
 " for mac
 syntax on
+
+" 마우스로 복사하려고
+set mouse=i
+
+" 주석 어둡게
+" highlight Comment ctermfg=8
+" highlight Comment ctermfg=34
+highlight Comment ctermfg=247
+
+" 검색시 대소문자 무시
+set ignorecase
+" 이때 검색어에 대문자가 있을 경우 자동으로 대문자만 검색한다.
+set smartcase
 
 
 
@@ -311,141 +465,18 @@ nnoremap Q @q
 nnoremap <C-k><C-k> :<C-u>execute 'move -1-'. v:count1<CR>
 nnoremap <C-j><C-j> :<C-u>execute 'move +'. v:count1<CR>
 
+" set nu toggle
+nnoremap \nn :set invnumber<CR>
 
-""" plugin 관련
-" Plugin 'frazrepo/vim-rainbow'
-let g:rainbow_active = 1
+" Like gJ, but always remove spaces
+fun! s:join_spaceless()
+    execute 'normal! gJ'
 
-" Plugin 'Raimondi/delimitMate'
-let delimitMate_expand_cr=1
+    " Remove character under the cursor if it's whitespace.
+    if matchstr(getline('.'), '\%' . col('.') . 'c.') =~ '\s'
+        execute 'normal! dw'
+    endif
+endfun
 
-" Plugin 'preservim/nerdcommenter'
-" Add spaces after comment delimiters by default
-let g:NERDSpaceDelims = 0
-" Use compact syntax for prettified multi-line comments
-let g:NERDCompactSexyComs = 1
-" Align line-wise comment delimiters flush left instead of following code indentation
-let g:NERDDefaultAlign = 'left'
-" Set a language to use its alternate delimiters by default
-let g:NERDAltDelims_java = 1
-" Add your own custom formats or override the defaults
-let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
-" Allow commenting and inverting empty lines (useful when commenting a region)
-let g:NERDCommentEmptyLines = 1
-" Enable trimming of trailing whitespace when uncommenting
-let g:NERDTrimTrailingWhitespace = 1
-" Enable NERDCommenterToggle to check all selected lines is commented or not
-let g:NERDToggleCheckAllLines = 1
-" \ne로 nt toggle
-nmap <leader>ne :NERDTreeToggle<cr>
-" nerdtree 항상 시작
-" autocmd vimenter * NERDTree
-
-" Plugin 'nathanaelkane/vim-indent-guides'
-let g:indent_guides_enable_on_vim_startup = 1
-set ts=4 sw=4 et
-let g:indent_guides_start_level = 2
-let g:indent_guides_guide_size = 1
-let g:indent_guides_auto_colors = 0
-hi IndentGuidesOdd  ctermbg=darkgrey
-hi IndentGuidesEven ctermbg=darkgrey
-
-" Plugin 'peterrincker/vim-argumentative'
-nmap [; <Plug>Argumentative_Prev
-nmap ]; <Plug>Argumentative_Next
-xmap [; <Plug>Argumentative_XPrev
-xmap ]; <Plug>Argumentative_XNext
-nmap <; <Plug>Argumentative_MoveLeft
-nmap >; <Plug>Argumentative_MoveRight
-xmap i; <Plug>Argumentative_InnerTextObject
-xmap a; <Plug>Argumentative_OuterTextObject
-omap i; <Plug>Argumentative_OpPendingInnerTextObject
-omap a; <Plug>Argumentative_OpPendingOuterTextObject
-
-" Plugin 'vim-airline/vim-airline'
-" Plugin 'vim-airline/vim-airline-themes'
-" vim airline에 현재 경로도 표시하도록 설정
-let g:airline_section_c = '%<%F%m %#__accent_red#%{airline#util#wrap(airline#parts#readonly(),0)}%#__restore__#'
-" vim airline 화살표 모양
-let g:airline_powerline_fonts = 1
-" vim airline theme. 이거 의외로 괜찮음.
-let g:airline_theme='simple'
-
-" Plugin 'vim-python/python-syntax'
-" 너무 많이하면 난잡함
-" let g:python_highlight_all = 1
-let g:python_highlight_builtins = 1
-
-" Plugin 'nvie/vim-flake8'
-autocmd FileType python map <buffer> <leader>f :call flake8#Flake8()<CR>
-let g:flake8_quickfix_height=20
-let g:flake8_show_in_gutter=1  " show
-let g:flake8_show_in_file=1  " show
-let g:flake8_error_marker='EE'     " set error marker to 'EE'
-let g:flake8_warning_marker='WW'   " set warning marker to 'WW'
-let g:flake8_pyflake_marker=''     " disable PyFlakes warnings
-let g:flake8_complexity_marker=''  " disable McCabe complexity warnings
-let g:flake8_naming_marker=''      " disable naming warnings
-" to use colors defined in the colorscheme
-highlight link Flake8_Error      Error
-highlight link Flake8_Warning    WarningMsg
-highlight link Flake8_Complexity WarningMsg
-highlight link Flake8_Naming     WarningMsg
-highlight link Flake8_PyFlake    WarningMsg
-
-" Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
-" highlight
-let g:NERDTreeFileExtensionHighlightFullName = 1
-" let g:NERDTreeExactMatchHighlightFullName = 1
-" let g:NERDTreePatternMatchHighlightFullName = 1
-" red line 없애줌
-let g:NERDTreeHighlightCursorline = 0
-
-" Plugin 'osyo-manga/vim-anzu'
-" mapping
-nmap n <Plug>(anzu-n-with-echo)
-nmap N <Plug>(anzu-N-with-echo)
-nmap * <Plug>(anzu-star-with-echo)
-nmap # <Plug>(anzu-sharp-with-echo)
-" statusline
-set statusline=%{anzu#search_status()}
-
-" Plugin 'machakann/vim-highlightedyank'
-" A negative number makes the highlight persistent.
-"let g:highlightedyank_highlight_duration = -1
-" persistent는 아닌것같더라.
-
-" Assign a number of time in milliseconds.
-let g:highlightedyank_highlight_duration = 1000
-" 사실은 디폴트도 1000인듯
-
-" Plugin 'flebel/vim-scroll-position'
-" yellow
-hi ScrollPositionMarker        ctermfg=11
-hi ScrollPositionVisualBegin   ctermfg=11
-hi ScrollPositionVisualMiddle  ctermfg=11
-hi ScrollPositionVisualEnd     ctermfg=11
-hi ScrollPositionVisualOverlap ctermfg=11
-hi ScrollPositionChange        ctermfg=11
-hi ScrollPositionJump          ctermfg=11
-
-
-" Plugin 'AutoComplPop'
-set complete+=kspell
-set completeopt=menuone,longest
-set shortmess+=c
-
-" Plugin 'terryma/vim-smooth-scroll'
-noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
-noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
-noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
-noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
-
-" Plugin 'majutsushi/tagbar'
-" 먼저 설치를 진행 brew install ctags-exuberant
-" 그 다음 해당 경로를 적용
-let g:Tlist_Ctags_Cmd="/opt/homebrew/Cellar/ctags/5.8_2/bin/ctags"
-nmap <Leader>tg :TagbarToggle<CR>
-
-
-
+" Map it to a key
+nnoremap <Leader>J :call <SID>join_spaceless()<CR>"
