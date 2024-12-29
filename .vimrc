@@ -394,7 +394,11 @@ hi CursorLine   cterm=NONE ctermbg=235 ctermfg=NONE
 syntax on
 
 " 마우스로 복사하려고
-set mouse=i
+" set mouse-=a
+
+" simply use this. it fully disables mouse movement. mouse copy is still available.
+set mouse=
+set ttymouse=
 
 " 주석 어둡게
 " highlight Comment ctermfg=8
@@ -405,6 +409,21 @@ highlight Comment ctermfg=247
 set ignorecase
 " 이때 검색어에 대문자가 있을 경우 자동으로 대문자만 검색한다.
 set smartcase
+
+function! MaybeCenter() abort
+	let curr = line('.')
+	let prev = get(b:, 'prev_line', curr)
+	let top = line('w0')
+	let bot = line('w$')
+
+	if abs(curr - prev) >= 5 && (curr - top < 15 || bot - curr < 15)
+		normal! zz
+	endif
+
+	let b:prev_line = curr
+endfunction
+
+autocmd CursorMoved * call MaybeCenter()
 
 
 
@@ -465,3 +484,4 @@ endfun
 
 " Map it to a key
 nnoremap <Leader>J :call <SID>join_spaceless()<CR>"
+
